@@ -1,0 +1,28 @@
+https://github.com/parvanescu/lftcv2
+
+SymbolTable class:
+Has generic data type.
+Needs a type at initialization.
+
+Fields:
+    -> capacity: integer, represents the max number of linked lists in the st
+    -> size: integer, represents the number of nodes added to st
+    -> map: main data structure, a list with the starting node of a linked list on each position (or null if that linked list is empty)
+Methods:
+    -> put:
+    returns: tuple of the form (bucketIndex,linkedListIndex) representing the position of the token in the hashmap
+    params:
+     - value: the value of the token
+    description:
+        adds a new value to a bucket, based on the hash value of the input parameter
+    -> pos:
+    returns: tuple of the form (bucketIndex, linkedListIndex) representing the position of the token in the hashmap
+    params:
+     - value: the value of the token
+    description:
+        returns the position of the token in hashmap or if it doesn't exist it adds it using the put method
+    -> hashFunction
+    returns: an integer representing the sum of the value of the ascii chars from the input parameter
+    params:
+    - value: the value of the token whom hash should be computed
+    description: computes the sum of the value of the ascii chars from the input parameter

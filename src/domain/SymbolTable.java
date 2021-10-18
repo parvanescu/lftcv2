@@ -5,13 +5,9 @@ import java.util.List;
 
 public class SymbolTable<V> {
     private final List<Node<V>> map;
-    private static final int capacity = 10;
+    private int capacity;
     private int size = 0;
 
-
-    public SymbolTable(){
-        this(capacity);
-    }
 
     public SymbolTable(int capacity){
         this.map = new ArrayList<>();
@@ -67,6 +63,14 @@ public class SymbolTable<V> {
             sum += aByte;
         }
         return sum % capacity;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public int getCapacity(){
+        return capacity;
     }
 
     @Override

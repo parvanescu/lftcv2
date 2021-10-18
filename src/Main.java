@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        SymbolTable<String> st = new SymbolTable<>();
+        SymbolTable<String> st = new SymbolTable<>(10);
         List<Position> positionList = new ArrayList<>();
         positionList.add(st.pos("a"));
         positionList.add(st.pos("2"));
