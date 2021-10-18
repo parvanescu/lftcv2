@@ -1,0 +1,67 @@
+Alphabet: 
+
+Letters from the following sets: 
+
+[A-Z] , belonging to English alphabet 
+
+[a-z], belonging to English alphabet 
+
+Special characters: 
+
+‘_’ (underline) 
+
+Decimal digits belonging to the following set: [0,9] 
+
+ 
+
+Lexic: 
+
+Special symbols: 
+
+Operators: + , - , * , ** , /  , < , <=, = , >=, > , !=
+
+Separators:
+- ;
+- space
+- [ ]
+- { } 
+- < >
+- '
+- "
+
+
+Reserved words: decl,prog,list,char, while, if, else, int, read, print, for, string 
+
+Identifiers: 
+Sequence of letters,digits and allowed special characters, s.t. the first char is a letter; 
+
+Identifier= letter | letter{allowed_identifier_characters} 
+
+letter= “A” | “B” | … | “Z” | “a” | “b” | … | “z” 
+
+digit= “0” | “1” | … | “9” 
+
+allowed_identifier = letter | digit | “_” 
+
+Constants 
+
+Integer –rule: 
+
+nrConst=[”+”]nzdigit[no]|”-”nzdigit[no] | "0" 
+
+no=digit{no} | digit
+
+nzdigit = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" 
+
+Float -rule:
+floatNr = nrConst ["," no]
+
+Character: 
+
+character= 'letter' | 'digit' 
+
+String: 
+
+string= "charArr"  
+
+charArr:=character{charArr}  

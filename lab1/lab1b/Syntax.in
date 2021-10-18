@@ -1,0 +1,39 @@
+program= "decl {" declList "} prog {" cmpdStmt "}"  
+
+declList= {declaration} 
+
+declaration= type IDENTIFIER";" | type IDENTIFIER = expression ";" | arrayDecl "= [" [{expression [,] }] “];”
+
+type= "string" | "char" | "int" | "float" | arrayDecl
+
+arrayDecl= "List<" type ">[" no "]" 
+
+stmtList = stmt | stmt ";" stmtList   
+
+stmt= simpleStmt  | complexStmt 
+
+simpleStmt = assignStmt | ioStmt 
+
+assignStmt= IDENTIFIER "=" expression 
+
+expression = mathExpression | stringExpression 
+
+mathExpression= mathExpression "+"|"-"|"*"|"/"|"**" factor | factor 
+
+factor= "("mathExpression")" | IDENTIFIER | no 
+
+stringExpression= stringExpression “+” string | string | char 
+
+iostmt= read "(" IDENTIFIER ")" | print "(" expression | IDENTIFIER ")" 
+
+complexStmt= ifStmt | whileStmt | forStmt 
+
+ifStmt= "IF(" condition "){"  stmtList "}"["ELSE{" stmtList "}"] 
+
+whileStmt= "WHILE(" condition "){" stmtList "}" 
+
+forStmt="for( LET" assignStmt ";" condition ";" assignStmt "){" stmtList "}" 
+
+condition= expression RELATION expression | expression 
+
+RELATION = “<” | “<=” | “==” | “!=” | “>=” | “>” 
