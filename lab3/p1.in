@@ -1,0 +1,13 @@
+decl{
+int a,b,c;
+}
+prog{
+    read(a);read(b);read(c);
+    if( a >= b and a >= c){
+        print(a);
+    }else if( b >= a and b >= c){
+        print(b);
+    }else if( c >= a and c>= b){
+        print(c);
+    }
+}

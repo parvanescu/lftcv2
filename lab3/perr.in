@@ -1,0 +1,10 @@
+decl{
+    int 1sum,n,inputNumber;
+}
+prog{
+    for(let i=0;i<n; i$){
+        read(inputNumber);
+        1sum = 1sum + inputNumber;
+    }
+    write(1sum);
+}
