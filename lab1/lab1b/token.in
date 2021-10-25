@@ -8,14 +8,21 @@
 >=
 >
 !=
+,
 ;
- (space)
+ 
 [
 ]
 {
 }
 <
 >
+(
+)
+**
+"
+'
+++
 decl
 prog
 int
@@ -28,3 +35,4 @@ else
 read
 print
 for
+sqrt
