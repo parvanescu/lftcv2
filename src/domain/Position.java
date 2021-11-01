@@ -11,9 +11,6 @@ public class Position {
 
     @Override
     public String toString() {
-        return "Position{" +
-                "hashPos=" + hashPos +
-                ", linkedListPos=" + linkedListPos +
-                '}';
+        return "("+hashPos+","+linkedListPos+")";
     }
 }

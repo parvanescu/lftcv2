@@ -14,6 +14,7 @@ public class SymbolTable<V> {
         for(int i=0;i<capacity;i++){
             this.map.add(null);
         }
+        this.capacity = capacity;
     }
 
     private Position put(V value){
@@ -75,9 +76,29 @@ public class SymbolTable<V> {
 
     @Override
     public String toString() {
-        return "SymbolTable{" +
-                "map=" + map +
-                ", size=" + size +
-                '}';
+        StringBuilder builder = new StringBuilder();
+        builder.append("|  IDX  ");
+        for(int j = 0;j<map.size()/2;j++){
+            builder.append(centerString(10,String.valueOf(j)));
+        }
+        builder.append("|\n");
+        builder.append("|-------|").append("----------|".repeat(map.size() / 2));
+        builder.append("\n");
+        for (int i = 0;i<map.size();i++){
+            builder.append(centerString(7,String.valueOf(i)));
+            Node<V> node = map.get(i);
+            while(node != null){
+                builder.append(centerString(10,node.value.toString()));
+                node = node.next;
+            }
+            builder.append("|\n");
+            builder.append("|-------|").append("----------|".repeat(map.size() / 2));
+            builder.append("\n");
+        }
+        return builder.toString();
+    }
+
+    public static String centerString (int width, String s) {
+        return String.format("|%-" + width  + "s", String.format("%" + (s.length() + (width - s.length()) / 2) + "s", s));
     }
 }
