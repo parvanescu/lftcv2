@@ -5,5 +5,6 @@ public enum TokenClass {
     SEPARATOR,
     OPERATOR,
     IDENTIFIER,
-    CONSTANT
+    CONSTANT,
+    INVALID_TOKEN
 }

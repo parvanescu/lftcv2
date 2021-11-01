@@ -1,5 +1,7 @@
 package domain;
 
+import exceptions.InvalidTokenException;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +17,7 @@ public class Scanner {
     private final PIF pif;
     private final List<String> separatorsList;
     private final List<String> reservedWordsList;
-    private List<String> exceptionList;
+    private final List<InvalidTokenException> exceptionList;
 
     public Scanner(String inputFile, String tokensFile) {
         this.inputFile = inputFile;
@@ -40,10 +42,12 @@ public class Scanner {
             while (fileScanner.hasNextLine()) {
                 String tokenLine = fileScanner.nextLine().strip();
                 List<String> tokensByLine = detect(tokenLine);
-                System.out.println(tokensByLine);
-                for (String token : tokensByLine) {
-
+                for (int i=0;i<tokensByLine.size();i++) {
+                    TokenClass tokenClass = classify(tokensByLine.get(i),i>1?tokensByLine.get(i-1):null,i<tokensByLine.size()-1?tokensByLine.get(i+1):null);
+                    if(tokenClass.equals(TokenClass.INVALID_TOKEN))exceptionList.add(new InvalidTokenException(line,i));
+                    this.pif.put(new PIFtoken(tokenClass.toString(),this.symbolTable.pos(tokensByLine.get(i))));
                 }
+                line++;
             }
 
 
@@ -92,9 +96,9 @@ public class Scanner {
                 if (!cmpSeparator.equals(""))
                     tokens.add(cmpSeparator);
 
-                if(tokenCharArray[i] != '\"')
-                builtToken = isStringFlag ? builtToken + tokenCharArray[i] : "";
-                if(isStringFlag && tokenCharArray[i] == '\"'){
+                if (tokenCharArray[i] != '\"')
+                    builtToken = isStringFlag ? builtToken + tokenCharArray[i] : "";
+                if (isStringFlag && tokenCharArray[i] == '\"') {
                     tokens.add(builtToken);
                     tokens.add("\"");
                     builtToken = "";
@@ -102,30 +106,51 @@ public class Scanner {
                 cmpSeparator = "";
 
                 isStringFlag = Character.toString(tokenCharArray[i]).equals("\"") != isStringFlag;
-
-
-
-
-
-
             }
         }
 
         return tokens.stream().filter(tokenString -> !Objects.equals(tokenString, " ")).collect(Collectors.toList());
     }
 
-    private TokenClass classify(String token) {
-        Pattern identifierPattern = Pattern.compile("");
-        Pattern constantPattern = Pattern.compile("");
-        Pattern separatorPattern = Pattern.compile("");
+    private TokenClass classify(String token,String prevToken,String nextToken) {
+        Pattern identifierPattern = Pattern.compile("^[a-zA-Z][a-zA-Z0-9_]*");
+        Pattern stringConstantPattern = Pattern.compile("(^\".*\"$)|(^'.'$)");
+        Pattern numeralConstantPattern = Pattern.compile("[1-9][0-9]*(,[0-9]*)?|0");
+        Pattern separatorPattern = Pattern.compile("[,; \\[\\](){}<>'\"]");
+        Pattern operatorPattern = Pattern.compile("\\+|-|\\*|/|=|<|(<=)|(>=)|>|(!=)|(\\*\\*)|(\\+\\+)");
 
         Matcher identifierMatcher = identifierPattern.matcher(token);
-        Matcher constantMatcher = constantPattern.matcher(token);
+        Matcher numeralConstantMatcher = numeralConstantPattern.matcher(token);
+        Matcher separatorMatcher = separatorPattern.matcher(token);
+        Matcher operatorMatcher = operatorPattern.matcher(token);
+
+        if(reservedWordsList.contains(token)){
+            return TokenClass.RESERVED_WORD;
+        }
 
         if (identifierMatcher.matches()) {
             return TokenClass.IDENTIFIER;
         }
-        return null;
+
+        if(numeralConstantMatcher.matches()){
+            return TokenClass.CONSTANT;
+        }
+        if(prevToken!=null && nextToken != null){
+            Matcher stringConstantMatcher = stringConstantPattern.matcher(prevToken+token+nextToken);
+            if(stringConstantMatcher.matches()){
+                return TokenClass.CONSTANT;
+            }
+        }
+
+        if(separatorMatcher.matches() && !Objects.equals(prevToken, "list")){
+            return TokenClass.SEPARATOR;
+        }
+
+        if(operatorMatcher.matches()){
+            return TokenClass.OPERATOR;
+        }
+
+        return TokenClass.INVALID_TOKEN;
     }
 
     public SymbolTable<String> getSymbolTable() {
@@ -134,5 +159,9 @@ public class Scanner {
 
     public PIF getPif() {
         return pif;
+    }
+
+    public List<InvalidTokenException> getExceptionList() {
+        return exceptionList;
     }
 }

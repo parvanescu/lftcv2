@@ -15,8 +15,6 @@
 ]
 {
 }
-<
->
 (
 )
 **
@@ -36,3 +34,4 @@ read
 print
 for
 sqrt
+float
