@@ -1,0 +1,61 @@
+https://github.com/parvanescu/lftcv2
+
+Scanner class:
+ At initialization requires an input file path and tokens file path.
+
+ Fields:
+    - inputFile: String, path to the file which contains the program to be scanned
+    - tokensFile: String, path to the file which contains the tokens
+    - symbolTable: The symboltable
+    - pif: Data structure regarding the program internal form
+    - separatorsList: a list with Strings representing all the separators
+    - reservedWordsList: a list with Strings representing all the reserved words
+    - exceptionList: a list with all the exceptions that occured while scanning
+
+ Methods:
+    ->startScanning:
+        call the methods for reading the tokens from the file and builds the ST and the PIF
+    ->getTokens:
+        Scans line by line the token file and builds the lists with separators and reservedWords
+    ->detect:
+        Params: token - string
+        Return: List of strings
+        Description:
+            Gets as an input a line scanned from the input file.
+            Parses it character by character
+            At each step adds the read character to a string variable
+            If a separator is found, based on its type, the saved variable is added to a list which will be returned
+            When a separator is found, the detection algorithm look forward by a character to search for a separator
+            having 2 characters (e.g. >=, !=).
+            For string constants also a check is made so that everything that is between quotes is saved as a token.
+    -> classify:
+        Params: token - string
+                prevToken - string
+                nextToken - string
+        Return: ENUM TokenClass
+                    -> Reserved word, identifier, constant, separator, operator, invalid token
+        Description:
+                The function classifies the given token based on some regex patterns
+                    a)identifier: start with a letter, afterwards any letter/number and underline character is accepted
+                      with any number of occurrences
+                    b)string constant: should start with double quotes or single quote and should end in the same way
+                    c)numeral constant: should start with a digit different from 0 and continue with any number of digits
+                     and optionally followed by a comma (,) and any number of digits from 0 to 9. Or plain the digit 0 is accepted
+                    d)separator: any separator defined in the tokens file
+                    c)operator: any operator defined in the tokens file
+                For the string constant the prev and next token are verified, so that they are both single or double quotes
+                If any of the regular expressions defined before are not met, the INVALID_TOKEN value is returned
+
+    -> buildStAndPif:
+        Description:
+            Iterates through every line from the input file, calls the detection function to get the list of tokens on
+            every line, then classifies each token, and puts it into the pif and symbol table.
+            If a lexical error is found, it saves in the exception list the line and the nr of the token at which the
+            lexical error occurred.
+
+ PIF class:
+    Contains a list of PIF tokens
+    PifToken:
+        Token - A string representing the token class
+        Position - a tuple (x,y) where x represents the bucket in the hashmap from st
+                                       y represent the index in the bucket of the actual token value
