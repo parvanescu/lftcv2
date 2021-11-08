@@ -6,11 +6,11 @@ Scanner class:
  Fields:
     - inputFile: String, path to the file which contains the program to be scanned
     - tokensFile: String, path to the file which contains the tokens
-    - symbolTable: The symboltable
+    - symbolTable: The symbol table
     - pif: Data structure regarding the program internal form
     - separatorsList: a list with Strings representing all the separators
     - reservedWordsList: a list with Strings representing all the reserved words
-    - exceptionList: a list with all the exceptions that occured while scanning
+    - exceptionList: a list with all the exceptions that occurred while scanning
 
  Methods:
     ->startScanning:

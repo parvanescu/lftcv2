@@ -42,10 +42,11 @@ public class Scanner {
             while (fileScanner.hasNextLine()) {
                 String tokenLine = fileScanner.nextLine().strip();
                 List<String> tokensByLine = detect(tokenLine);
-                for (int i=0;i<tokensByLine.size();i++) {
-                    TokenClass tokenClass = classify(tokensByLine.get(i),i>1?tokensByLine.get(i-1):null,i<tokensByLine.size()-1?tokensByLine.get(i+1):null);
-                    if(tokenClass.equals(TokenClass.INVALID_TOKEN))exceptionList.add(new InvalidTokenException(line,i));
-                    this.pif.put(new PIFtoken(tokenClass.toString(),this.symbolTable.pos(tokensByLine.get(i))));
+                for (int i = 0; i < tokensByLine.size(); i++) {
+                    TokenClass tokenClass = classify(tokensByLine.get(i), i > 1 ? tokensByLine.get(i - 1) : null, i < tokensByLine.size() - 1 ? tokensByLine.get(i + 1) : null);
+                    if (tokenClass.equals(TokenClass.INVALID_TOKEN))
+                        exceptionList.add(new InvalidTokenException(line, i));
+                    this.pif.put(new PIFtoken(tokenClass.toString(), this.symbolTable.pos(tokensByLine.get(i))));
                 }
                 line++;
             }
@@ -112,7 +113,7 @@ public class Scanner {
         return tokens.stream().filter(tokenString -> !Objects.equals(tokenString, " ")).collect(Collectors.toList());
     }
 
-    private TokenClass classify(String token,String prevToken,String nextToken) {
+    private TokenClass classify(String token, String prevToken, String nextToken) {
         Pattern identifierPattern = Pattern.compile("^[a-zA-Z][a-zA-Z0-9_]*");
         Pattern stringConstantPattern = Pattern.compile("(^\".*\"$)|(^'.'$)");
         Pattern numeralConstantPattern = Pattern.compile("[1-9][0-9]*(,[0-9]*)?|0");
@@ -124,7 +125,7 @@ public class Scanner {
         Matcher separatorMatcher = separatorPattern.matcher(token);
         Matcher operatorMatcher = operatorPattern.matcher(token);
 
-        if(reservedWordsList.contains(token)){
+        if (reservedWordsList.contains(token)) {
             return TokenClass.RESERVED_WORD;
         }
 
@@ -132,21 +133,21 @@ public class Scanner {
             return TokenClass.IDENTIFIER;
         }
 
-        if(numeralConstantMatcher.matches()){
+        if (numeralConstantMatcher.matches()) {
             return TokenClass.CONSTANT;
         }
-        if(prevToken!=null && nextToken != null){
-            Matcher stringConstantMatcher = stringConstantPattern.matcher(prevToken+token+nextToken);
-            if(stringConstantMatcher.matches()){
+        if (prevToken != null && nextToken != null) {
+            Matcher stringConstantMatcher = stringConstantPattern.matcher(prevToken + token + nextToken);
+            if (stringConstantMatcher.matches()) {
                 return TokenClass.CONSTANT;
             }
         }
 
-        if(separatorMatcher.matches() && !Objects.equals(prevToken, "list")){
+        if (separatorMatcher.matches() && !Objects.equals(prevToken, "list")) {
             return TokenClass.SEPARATOR;
         }
 
-        if(operatorMatcher.matches()){
+        if (operatorMatcher.matches()) {
             return TokenClass.OPERATOR;
         }
 
