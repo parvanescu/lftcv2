@@ -1,6 +1,8 @@
 package domain;
 
 import exceptions.InvalidTokenException;
+import fa.FiniteStateMachine;
+import fa.ImplFiniteAutomata;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -10,8 +12,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+
 public class Scanner {
     private final String inputFile;
+    private final String identifierAutomaton;
+    private final String integerConstantAutomaton;
     private final String tokensFile;
     private final SymbolTable<String> symbolTable;
     private final PIF pif;
@@ -19,7 +24,7 @@ public class Scanner {
     private final List<String> reservedWordsList;
     private final List<InvalidTokenException> exceptionList;
 
-    public Scanner(String inputFile, String tokensFile) {
+    public Scanner(String inputFile, String tokensFile,String identifierAutomaton,String integerConstantAutomaton) {
         this.inputFile = inputFile;
         this.tokensFile = tokensFile;
         this.symbolTable = new SymbolTable<>(10);
@@ -27,6 +32,8 @@ public class Scanner {
         this.separatorsList = new ArrayList<>();
         this.reservedWordsList = new ArrayList<>();
         this.exceptionList = new ArrayList<>();
+        this.identifierAutomaton = identifierAutomaton;
+        this.integerConstantAutomaton = integerConstantAutomaton;
     }
 
     public void startScanning() {
@@ -114,14 +121,15 @@ public class Scanner {
     }
 
     private TokenClass classify(String token, String prevToken, String nextToken) {
-        Pattern identifierPattern = Pattern.compile("^[a-zA-Z][a-zA-Z0-9_]*");
+
+        FiniteStateMachine automataForIdentifiers = new ImplFiniteAutomata(this.identifierAutomaton);
+        FiniteStateMachine automataForIntConstants = new ImplFiniteAutomata(this.integerConstantAutomaton);
         Pattern stringConstantPattern = Pattern.compile("(^\".*\"$)|(^'.'$)");
-        Pattern numeralConstantPattern = Pattern.compile("[1-9][0-9]*(,[0-9]*)?|0");
+        Pattern floatConstantPattern = Pattern.compile("[1-9][0-9]*,[0-9]*?|0");
         Pattern separatorPattern = Pattern.compile("[,; \\[\\](){}<>'\"]");
         Pattern operatorPattern = Pattern.compile("\\+|-|\\*|/|=|<|(<=)|(>=)|>|(!=)|(\\*\\*)|(\\+\\+)");
 
-        Matcher identifierMatcher = identifierPattern.matcher(token);
-        Matcher numeralConstantMatcher = numeralConstantPattern.matcher(token);
+        Matcher floatConstantMatcher = floatConstantPattern.matcher(token);
         Matcher separatorMatcher = separatorPattern.matcher(token);
         Matcher operatorMatcher = operatorPattern.matcher(token);
 
@@ -129,11 +137,23 @@ public class Scanner {
             return TokenClass.RESERVED_WORD;
         }
 
-        if (identifierMatcher.matches()) {
-            return TokenClass.IDENTIFIER;
-        }
+        try{
+            for(int i=0;i< token.length();i++){
+                automataForIdentifiers = automataForIdentifiers.switchState(token.charAt(i));
+            }
+            if(automataForIdentifiers.canStop())
+                return TokenClass.IDENTIFIER;
+        }catch (Exception ignored){}
 
-        if (numeralConstantMatcher.matches()) {
+        try{
+            for(int i=0;i<token.length();i++){
+                automataForIntConstants = automataForIntConstants.switchState(token.charAt(i));
+            }
+            if(automataForIntConstants.canStop())
+                return TokenClass.CONSTANT;
+        }catch (Exception ignored){}
+
+        if (floatConstantMatcher.matches()) {
             return TokenClass.CONSTANT;
         }
         if (prevToken != null && nextToken != null) {

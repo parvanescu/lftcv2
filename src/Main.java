@@ -1,18 +1,17 @@
-import domain.Position;
 import domain.Scanner;
-import domain.SymbolTable;
 import exceptions.InvalidTokenException;
-
-import java.util.ArrayList;
-import java.util.List;
+import fa.FiniteStateMachine;
+import fa.ImplFiniteAutomata;
 
 // 1a => un singur symbol table
 
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(
-                "C:\\Users\\parva\\OneDrive\\Desktop\\faculta semestrul5\\lftc\\LabsRepo\\lab3\\p1.in",
-                "C:\\Users\\parva\\OneDrive\\Desktop\\faculta semestrul5\\lftc\\LabsRepo\\lab1\\lab1b\\token.in"
+                "C:\\Users\\parva\\OneDrive\\Desktop\\faculta semestrul5\\lftc\\LabsRepo\\lab3\\perr.in",
+                "C:\\Users\\parva\\OneDrive\\Desktop\\faculta semestrul5\\lftc\\LabsRepo\\lab1\\lab1b\\token.in",
+                "C:\\Users\\parva\\OneDrive\\Desktop\\faculta semestrul5\\lftc\\LabsRepo\\lab4\\FAidentifiers.in",
+                "C:\\Users\\parva\\OneDrive\\Desktop\\faculta semestrul5\\lftc\\LabsRepo\\lab4\\FAintconstants.in"
                 );
         scanner.startScanning();
         System.out.println(scanner.getPif());
