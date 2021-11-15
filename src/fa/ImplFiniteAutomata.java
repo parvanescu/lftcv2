@@ -1,27 +1,26 @@
 package fa;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ImplFiniteAutomata implements FiniteStateMachine {
 
     private State currentState;
-
     private String file;
     public List<State> stateList;
     private List<String> alphabet;
+    private final Map<State, Transition> stateTransitionMap;
 
     public ImplFiniteAutomata(String file) {
         this.file = file;
+        this.stateTransitionMap = new HashMap<>();
         init();
     }
 
     public ImplFiniteAutomata(State initial) {
         this.currentState = initial;
+        this.stateTransitionMap = new HashMap<>();
     }
 
     @Override
@@ -64,7 +63,7 @@ public class ImplFiniteAutomata implements FiniteStateMachine {
                     }
                 }
             }
-            this.currentState = this.stateList.stream().filter(state->Objects.equals(state.getStateName(),this.currentState.getStateName())).toList().get(0);
+            this.currentState = this.stateList.stream().filter(state -> Objects.equals(state.getStateName(), this.currentState.getStateName())).toList().get(0);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -113,8 +112,9 @@ public class ImplFiniteAutomata implements FiniteStateMachine {
 
             Transition newTransition = new ImplTransition(ruleAlphabetValues,
                     this.stateList.stream().filter(state -> Objects.equals(state.getStateName(), rulesParts.get(1))).collect(Collectors.toList()).get(0));
-            State stateToUpdate = this.stateList.stream().filter(state -> Objects.equals(state.getStateName(),ruleEntryState)).collect(Collectors.toList()).get(0);
+            State stateToUpdate = this.stateList.stream().filter(state -> Objects.equals(state.getStateName(), ruleEntryState)).collect(Collectors.toList()).get(0);
             stateToUpdate.with(newTransition);
+            stateTransitionMap.put(stateToUpdate, newTransition);
         }
     }
 
@@ -133,5 +133,26 @@ public class ImplFiniteAutomata implements FiniteStateMachine {
     private void buildFinalStatesList(String csvStates) {
         List<String> finalStatesList = List.of(csvStates.split(","));
         this.stateList.forEach(state -> state.setIsFinal(finalStatesList.contains(state.getStateName())));
+    }
+
+    public List<State> getSetOfStates() {
+        return this.stateList;
+    }
+
+    public List<String> getAlphabet() {
+        return this.alphabet;
+    }
+
+    public Map<State, Transition> getTransitions() {
+        return stateTransitionMap;
+    }
+
+    public List<State> getFinalStates() {
+        List<State> finalStatesList = new ArrayList<>();
+        for (State state : this.stateList) {
+            if (state.isFinal())
+                finalStatesList.add(state);
+        }
+        return finalStatesList;
     }
 }

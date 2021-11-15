@@ -21,4 +21,9 @@ public class ImplTransition implements Transition{
         this.rules = rules;
         this.next = next;
     }
+
+    @Override
+    public String toString() {
+        return "Transition:\n" + "List of consumed values: " + rules + "\nNext state: "+ next.getStateName() + "\n";
+    }
 }

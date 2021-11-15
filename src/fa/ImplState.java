@@ -44,4 +44,14 @@ public class ImplState implements State{
     }
 
     public String getStateName(){return this.stateName;}
+
+    @Override
+    public List<Transition> getTransitionList() {
+        return this.transitionList;
+    }
+
+    @Override
+    public String toString() {
+        return "State: " + stateName;
+    }
 }
