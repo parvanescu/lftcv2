@@ -1,0 +1,120 @@
+FA documentation:
+fa = stateList "\n" alphabetList "\n" initialState "\n" rulesList "\n" finalStatesList
+stateList = stateName","stateList | stateName
+alphabetList = (letter | digit)","alphabetList | (letter | digit)
+initialState = stateName
+rulesList = rule ";" rulesList";" | rule";"
+rule = "(" stateName "," valuesList ")=" stateName"
+valuesList = anyValue | interval | (interval | anyValue) "|" valuesList
+interval = anyValue "-" anyValue
+anyValue = (letter | digit | specialChar )
+finalStatesList = stateName","finalStatesList | stateName
+stateName = "q"digit
+letter = a | b | ... | z | A | B | ..... | Z
+digit = 0 | 1 | ... | 9
+
+
+Algorithm Documentation:
+
+State:
+    Fields:
+        transitionList: List of transitions that are accessible from that state
+        isFinal: boolean value to verify if the state is a final one
+        stateName: a string value for the name of the state, for identification purposes only
+
+    Methods:
+        with:
+            Params: a transition
+            Return: the current instance
+            Description: adds a transition to the transitionList and returns the current instance
+        transit:
+            Params: a character
+            Returns: a state
+            Description: filters the elements of the transitionList based on the posibility to
+                         advance to the state described in the transition based on the character parameter
+                         and returns the state that was found. If not found an exception is thrown to stop
+                         the entire algorithm.
+
+Transition:
+    Fields:
+        rules: list of characters that can be consumed in order to reach the next state
+        next: the next state based on the rules build from the file
+
+    Methods:
+        isPossible:
+            Params: a character
+            Returns: a boolean
+            Description: returns true if the character given as parameter exists in the list
+                        of rules, else returns false
+
+FiniteAutomata:
+    Fields:
+        currentState: a state representing the current state
+        file: the file from which the rules of fa are read
+        stateList: the list of all states in the fa
+        alphabet: the list of all characters that can be consumed by the fa
+
+    Methods:
+        switchState:
+            Params: a character
+            Returns: a new state
+            Description: returns a new instance of a finite automata which has the current state
+                        the new state that can be achieved by consuming the character given as parameter
+
+        canStop:
+            Params: none
+            Returns: a boolean
+            Description: returns true if the isFinal flag of the current state is true, otherwise false
+
+
+        init:
+            Params: none
+            Returns: void
+            Description: reads the input file for the finite automata line by line and calls the required
+                        methods based on the number of the line which was read.
+                        Order:
+                            1. Build set of states
+                            2. Build the alphabet
+                            3. Set current state (initial state)
+                            4. Build the set of rules and add them to the created states
+                            5. Build the list of final states
+
+        buildSetOfStates:
+            Params: a string representing a line read from a file
+            Returns: void
+            Description: splits the given parameter by comma and creates a new state for each value from
+                        the resulting list. Followed by adding each created state to the list of states.
+
+
+        buildAlphabet:
+            Params: a string representing a line read from a file
+            Returns: void
+            Description: splits the given parameter by comma and adds each element from the resulting list
+                        to the alphabet list from the class
+
+
+        buildSetOfRules:
+            Params: a string representing a line read from a file
+            Returns: void
+            Description: parses the line given as parameter and builds the rules for each state
+                        Steps:
+                         1. Separates each rules by ";"
+                         2. For each rule:
+                            2a. Splits it in 2 parts, the starting state with the values that can be consumed
+                                to reach the next state, and the name of the next state
+                            2b. Splits the first part described in 2a between the initial state name and the
+                                set of rules, and creates a list of characters that will be populated by the
+                                set of rules
+                            2c. Splits the set of rules by  "|" and based on the type of rule (interval or single value)
+                                creates a list of characters that is added to the created list in 2b
+                            2d. Finally, creates a new transition containing the populated list from 2c
+                                Gets the state that has to contain the created transition and calls that states
+                                with method which adds the new transition into its transition list
+
+
+        buildFinalStatesList:
+            Params: a string representing a line read from a file
+            Returns: void
+            Description: splits the given parameter by comma and parses every element from the state list,
+                        modifying its isFinal boolean value to true if the states name is found in the list
+                        of the split values

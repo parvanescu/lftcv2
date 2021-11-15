@@ -70,11 +70,6 @@ public class ImplFiniteAutomata implements FiniteStateMachine {
         }
     }
 
-    private void buildFinalStatesList(String csvStates) {
-        List<String> finalStatesList = List.of(csvStates.split(","));
-        this.stateList.forEach(state -> state.setIsFinal(finalStatesList.contains(state.getStateName())));
-    }
-
     private void buildSetOfStates(String csvStates) {
         this.stateList = new ArrayList<>();
         List<String> states = List.of(csvStates.split(","));
@@ -133,5 +128,10 @@ public class ImplFiniteAutomata implements FiniteStateMachine {
         for (char i = '0'; i <= '9'; i++) {
             alphabetValues.add(i);
         }
+    }
+
+    private void buildFinalStatesList(String csvStates) {
+        List<String> finalStatesList = List.of(csvStates.split(","));
+        this.stateList.forEach(state -> state.setIsFinal(finalStatesList.contains(state.getStateName())));
     }
 }
