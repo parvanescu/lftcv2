@@ -5,8 +5,6 @@ import fa.*;
 import java.util.List;
 import java.util.Map;
 
-// 1a => un singur symbol table
-
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(

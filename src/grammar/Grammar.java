@@ -5,7 +5,7 @@ import java.io.FileNotFoundException;
 import java.util.*;
 
 public class Grammar {
-    Set<String> terminals,nonTerminals;
+    Set<String> terminals, nonTerminals;
     String startingSymbol, filename;
     List<ProductionRule> productionRules;
 
@@ -14,26 +14,50 @@ public class Grammar {
         this.nonTerminals = new HashSet<>();
         this.terminals = new HashSet<>();
         this.productionRules = new ArrayList<>();
+        this.readFromFile();
+        this.checkCFG();
     }
 
-    private void readFromFile() throws FileNotFoundException {
+    private void readFromFile() {
         File file = new File(this.filename);
-        Scanner fileScanner = new Scanner(file);
-        while(fileScanner.hasNextLine()) {
-            String line = fileScanner.nextLine();
-            List<String> splitLine = Arrays.asList(line.split(" = "));
-            String nonTerminal = splitLine.get(0);
-            nonTerminals.add(nonTerminal);
-
-            String[] productionRule = splitLine.get(1).split(" ");
-            for(String token: productionRule){
-                if(token.startsWith("\"") && token.endsWith("\""))
-                    terminals.add(token.substring(1,token.length()-1));
-
+        try {
+            Scanner fileScanner = new Scanner(file);
+            int lineNr = 0;
+            while (fileScanner.hasNextLine()) {
+                String line = fileScanner.nextLine();
+                if (lineNr == 0) {
+                    String lineWithoutBrackets = line.substring(1, line.length() - 1);
+                    nonTerminals.addAll(List.of(lineWithoutBrackets.split(",")));
+                }
+                if (lineNr == 1) {
+                    String lineWithoutBrackets = line.substring(1, line.length() - 1);
+                    terminals.addAll(List.of(lineWithoutBrackets.split(",")));
+                }
+                if (lineNr == 2) {
+                    this.startingSymbol = line;
+                }
+                if (lineNr > 2) {
+                    String[] splitProduction = line.split("->");
+                    String[] splitRules = line.split("\\|");
+                    ProductionRule productionRule = new ProductionRule(splitProduction[0]);
+                    for (String rule : splitRules)
+                        productionRule.addProduction(rule);
+                }
+                lineNr++;
             }
+        } catch (Exception ignored) {
+        }
+    }
 
-
-
+    private void checkCFG(){
+        for(ProductionRule rule:productionRules){
+            if(rule.nonTerminal.length()>2){
+                System.out.println("Grammar is not cfg");
+            }else{
+                char production = rule.nonTerminal.charAt(0);
+                if(Character.isLowerCase(production))
+                    System.out.println("terminal is in production rule");
+            }
         }
     }
 }
