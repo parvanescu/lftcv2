@@ -3,6 +3,7 @@ package grammar;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Grammar {
     Set<String> terminals, nonTerminals;
@@ -58,6 +59,42 @@ public class Grammar {
                 if(Character.isLowerCase(production))
                     System.out.println("terminal is in production rule");
             }
+        }
+    }
+
+    public void showMenu(){
+        System.out.println("1.Print set of nonTerminals");
+        System.out.println("2.Print set of terminals");
+        System.out.println("3.Print set of productions");
+        System.out.println("4.Print productions for a nonTerminal");
+        try{
+            Scanner scanner = new Scanner(System.in);
+            while (true){
+                String input = scanner.nextLine();
+                switch (input){
+                    case "1"->{
+                        System.out.println(this.nonTerminals);
+                    }
+                    case "2"->{
+                        System.out.println(this.terminals);
+                    }
+                    case "3"->{
+                        this.productionRules.forEach(productionRule -> System.out.println(productionRule.nonTerminal + "->" + productionRule.outputVariations));
+                    }
+                    case "4"->{
+                        System.out.println("Please enter a nonTerminal");
+                        String nonTerminal = scanner.nextLine();
+                        ProductionRule productionRule = this.productionRules.stream().filter(rule-> Objects.equals(rule.nonTerminal, nonTerminal)).collect(Collectors.toList()).get(0);
+                        System.out.println(productionRule.outputVariations);
+                    }
+                    case "x"->{
+                        throw new RuntimeException("Close console");
+                    }
+                }
+            }
+
+        }catch (Exception e){
+            System.out.println(e.getMessage());
         }
     }
 }
