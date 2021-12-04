@@ -1,39 +1,42 @@
-identifier = letter {  letter | digit | special_char }
-letter = "a" | "b" | ... | "z" | "A" | "B" | ...| "Z"
-digit = "0" | "1" |...| "9"
-special_char = "_"
-integer = "+" no | "-" no | no
-no = digit {no}
-float = integer ["," digit {digit}]
-character = "'" letter "'" | "'" digit "'"
-string = char {string}
-boolean = "true" | "false"
-number = digit {digit}
-program = "start" decl_list cmpd_stmt "end"
-decl_list = declaration | declaration "." decl_list
-declaration = variable_dclr | array_dclr
-variable_dclr = "declare" IDENTIFIER type1 type2 "*=" expression "."
-array_decl = "declare" IDENTIFIER type1 array_length_assignment type2 "."
-array_length_assignment = "max-length" "*=" expression
-type1 = "boolean" | "char" | "integer" | "double" | "float"
-type2 = "input" | "output" | "auxiliary" | "input-output"
-cmpd_stmt = stmt | stmt cmpd_stmt
-stmt = simple_stmt | struct_stmt
-simple_stmt = assignment_stmt | io_stmt
-assignment_stmt = IDENTIFIER "*=" expression "."
-io_stmt = "read" | "show" IDENTIFIER "."
-expression = expression ("+" | "-") term | term
-term = term ("*" | "/" | "%") factor | factor
-factor = "(" expression ")" | const | IDENTIFIER
-struct_stmt = if_stmt | while_stmt | pass_stmt | array_stmt | for_stmt
-if_stmt = "verify" "(" condition ")" ":" "case true:" cmpd_stmt "case false:" cmpd_stmt
-while_stmt = "repeat if:" "(" condition "):" cmpd_stmt "always:" cmpd_stmt
-pass_stmt = "pass."
-array_stmt = append_stmt | delete_stmt | length_stmt | get_stmt
-length_stmt = IDENTIFIER ".length"
-append_stmt = "append" IDENTIFIER "value" "(" IDENTIFIER ")" "."
-delete_stmt = "delete" IDENTIFIER "value" "(" IDENTIFIER ")" "."
-get_stmt = IDENTIFIER "[" integer "]"
-for_stmt = "go from" IDENTIFIER "to" IDENTIFIER ", ("increase" | "decrease") by number ":" cmpd_stmt
-condition = expression RELATION expression
-RELATION = "<" | "<=" | "=" | "<>" | ">=" | ">" | "and" | "or"
+{letter,digit,special_char,identifier,integer,no,boolean,float,character,string,program,decl_list,cmpd_stmt,declaration,variable_dclr,array_dclr,type1,type2,expression,array_length_assignment,stmt,simple_stmt,struct_stmt,assignment_stmt,io_stmt,term_factor,if_stmt,while_stmt,pass_stmt,array_stmt,for_stmt,append_stmt,delete_stmt,length_stmt,get_stmt,condition,relation}
+{a-z,A-Z,0-9,+,-,',true,false,start,end,.,declare,*=,max-length,boolean,char,integer,double,float,input,output,auxiliary,input-output,show,read,*,/,%,(,),verify,:,case true:,case false:,always:,repeat if,pass.,.length,append,value,delete,go from,to,increase by,decrease by,<,<=,=,>,>=,<>,and,or}
+{letter,digit,special_char,identifier,integer,no,boolean,float,character,string,program,decl_list,cmpd_stmt,declaration,variable_dclr,array_dclr,type1,type2,expression,array_length_assignment,stmt,simple_stmt,struct_stmt,assignment_stmt,io_stmt,term_factor,if_stmt,while_stmt,pass_stmt,array_stmt,for_stmt,append_stmt,delete_stmt,length_stmt,get_stmt,condition,relation}
+{a-z,A-Z,0-9,+,-,',true,false,start,end,.,declare,*=,max-length,boolean,char,integer,double,float,input,output,auxiliary,input-output,show,read,*,/,%,(,),verify,:,case true:,case false:,always:,repeat if,pass.,.length,append,value,delete,go from,to,increase by,decrease by,<,<=,=,>,>=,<>,and,or}
+identifier->letter identifier | letter digit special_char
+letter->a|b|...|z|A|B|...| Z
+digit->0|1 |...| 9
+special_char->_
+integer->+ no|- no|no
+no->digit no|digit
+float->integer|integer , no
+char->' letter '|' digit '
+string->char|char string
+boolean->true|false
+program->start decl_list cmpd_stmt end
+decl_list->declaration|declaration . decl_list
+declaration->variable_dclr|array_dclr
+variable_dclr->declare IDENTIFIER type1 type2 *= expression .
+array_decl->declare IDENTIFIER type1 array_length_assignment type2 .
+array_length_assignment->max-length *= expression
+type1->boolean|char|integer|double|float
+type2->input|output|auxiliary|input-output
+cmpd_stmt->stmt|stmt cmpd_stmt
+stmt->simple_stmt|struct_stmt
+simple_stmt->assignment_stmt|io_stmt
+assignment_stmt->IDENTIFIER *= expression .
+io_stmt->read|show IDENTIFIER .
+expression->expression + term|expression - term|term
+term->term * factor|term / factor|term % factor|factor
+factor->( expression )|no|IDENTIFIER
+struct_stmt->if_stmt|while_stmt|pass_stmt|array_stmt|for_stmt
+if_stmt->verify ( condition ) : case true: cmpd_stmt case false: cmpd_stmt
+while_stmt->repeat if: ( condition ): cmpd_stmt always: cmpd_stmt
+pass_stmt->pass.
+array_stmt->append_stmt|delete_stmt|length_stmt|get_stmt
+length_stmt->IDENTIFIER .length
+append_stmt->append IDENTIFIER value ( IDENTIFIER ) .
+delete_stmt->delete IDENTIFIER value ( IDENTIFIER ) .
+get_stmt->IDENTIFIER [ integer ]
+for_stmt->go from IDENTIFIER to IDENTIFIER , increase by no : cmpd_stmt|go from IDENTIFIER to IDENTIFIER , decrease by no : cmpd_stmt
+condition->expression RELATION expression
+RELATION-><|<=|=|<>|>=|>|and|or
