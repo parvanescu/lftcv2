@@ -19,6 +19,15 @@ public class Grammar {
         this.checkCFG();
     }
 
+    public Grammar(Grammar grammar){
+        this.filename = grammar.filename;
+        this.nonTerminals = new HashSet<>(grammar.nonTerminals);
+        this.terminals = new HashSet<>(grammar.terminals);
+        this.productionRules = new ArrayList<>(grammar.productionRules);
+        this.readFromFile();
+        this.checkCFG();
+    }
+
     private void readFromFile() {
         File file = new File(this.filename);
         try {
@@ -96,5 +105,25 @@ public class Grammar {
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
+    }
+
+    public Set<String> getTerminals() {
+        return terminals;
+    }
+
+    public Set<String> getNonTerminals() {
+        return nonTerminals;
+    }
+
+    public String getStartingSymbol() {
+        return startingSymbol;
+    }
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public List<ProductionRule> getProductionRules() {
+        return productionRules;
     }
 }

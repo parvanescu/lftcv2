@@ -15,4 +15,12 @@ public class ProductionRule {
     public void addProduction(String production){
         outputVariations.add(production);
     }
+
+    public String getNonTerminal() {
+        return nonTerminal;
+    }
+
+    public List<String> getOutputVariations() {
+        return outputVariations;
+    }
 }
