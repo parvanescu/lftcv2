@@ -1,7 +1,6 @@
 {letter,digit,special_char,identifier,integer,no,boolean,float,character,string,program,decl_list,cmpd_stmt,declaration,variable_dclr,array_dclr,type1,type2,expression,array_length_assignment,stmt,simple_stmt,struct_stmt,assignment_stmt,io_stmt,term_factor,if_stmt,while_stmt,pass_stmt,array_stmt,for_stmt,append_stmt,delete_stmt,length_stmt,get_stmt,condition,relation}
 {a-z,A-Z,0-9,+,-,',true,false,start,end,.,declare,*=,max-length,boolean,char,integer,double,float,input,output,auxiliary,input-output,show,read,*,/,%,(,),verify,:,case true:,case false:,always:,repeat if,pass.,.length,append,value,delete,go from,to,increase by,decrease by,<,<=,=,>,>=,<>,and,or}
-{letter,digit,special_char,identifier,integer,no,boolean,float,character,string,program,decl_list,cmpd_stmt,declaration,variable_dclr,array_dclr,type1,type2,expression,array_length_assignment,stmt,simple_stmt,struct_stmt,assignment_stmt,io_stmt,term_factor,if_stmt,while_stmt,pass_stmt,array_stmt,for_stmt,append_stmt,delete_stmt,length_stmt,get_stmt,condition,relation}
-{a-z,A-Z,0-9,+,-,',true,false,start,end,.,declare,*=,max-length,boolean,char,integer,double,float,input,output,auxiliary,input-output,show,read,*,/,%,(,),verify,:,case true:,case false:,always:,repeat if,pass.,.length,append,value,delete,go from,to,increase by,decrease by,<,<=,=,>,>=,<>,and,or}
+program
 identifier->letter identifier | letter digit special_char
 letter->a|b|...|z|A|B|...| Z
 digit->0|1 |...| 9

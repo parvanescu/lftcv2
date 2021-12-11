@@ -6,8 +6,7 @@ public class EnhancedGrammar {
 
     public EnhancedGrammar(Grammar grammar){
         this.grammar = new Grammar(grammar);
-        ProductionRule productionRule = new ProductionRule("S'");
-        productionRule.addProduction(this.grammar.startingSymbol);
+        ProductionRule productionRule = new ProductionRule("S'","S");
         this.grammar.productionRules.add(productionRule);
         this.grammar.startingSymbol = "S'";
     }
