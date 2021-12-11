@@ -94,30 +94,32 @@ public class Main {
 //            System.out.println("Exiting");
 //        }
 
-        Grammar grammar = new Grammar("C:\\Users\\parva\\OneDrive\\Desktop\\faculta semestrul5\\lftc\\LabsRepo\\lab5\\g3.txt");
+        Grammar grammar = new Grammar("C:\\Users\\parva\\OneDrive\\Desktop\\faculta semestrul5\\lftc\\LabsRepo\\lab5\\g2.txt");
 //        grammar.showMenu();
 
 
         Parser p = new Parser(new EnhancedGrammar(grammar));
-        List<LrItem> lrItems = new ArrayList<>();
-        LrItem item = new LrItem("S'");
-        item.setAfterDot(List.of("S"));
-        lrItems.add(item);
-        List<LrItem> s0 = p.closure(lrItems);
-        List<LrItem> s1 = p.goTo(s0,"S");
-        List<LrItem> s2 = p.goTo(s0,"a");
-        List<LrItem> s3 = p.goTo(s2,"A");
-        List<LrItem> s4 = p.goTo(s2,"b");
-        List<LrItem> s5 = p.goTo(s2,"c");
-        List<LrItem> s6 = p.goTo(s4,"A");
+//        List<LrItem> lrItems = new ArrayList<>();
+//        LrItem item = new LrItem("S'");
+//        item.setAfterDot(List.of("S"));
+//        lrItems.add(item);
+//        List<LrItem> s0 = p.closure(lrItems);
+//        List<LrItem> s1 = p.goTo(s0,"S");
+//        List<LrItem> s2 = p.goTo(s0,"a");
+//        List<LrItem> s3 = p.goTo(s2,"A");
+//        List<LrItem> s4 = p.goTo(s2,"b");
+//        List<LrItem> s5 = p.goTo(s2,"c");
+//        List<LrItem> s6 = p.goTo(s4,"A");
+//
+//        System.out.println(s0);
+//        System.out.println(s1);
+//        System.out.println(s2);
+//        System.out.println(s3);
+//        System.out.println(s4);
+//        System.out.println(s5);
+//        System.out.println(s6);
 
-        System.out.println(s0);
-        System.out.println(s1);
-        System.out.println(s2);
-        System.out.println(s3);
-        System.out.println(s4);
-        System.out.println(s5);
-        System.out.println(s6);
+        System.out.println(p.colCan());
 
 
 

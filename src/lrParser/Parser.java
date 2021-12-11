@@ -24,7 +24,7 @@ public class Parser {
             List<LrItem> copyClosureSet = new ArrayList<>(closureSet);
             for (LrItem lrItem : closureSet) {
                 String firstTokenAfterDot;
-                if(lrItem.getAfterDot().size() > 0)
+                if (lrItem.getAfterDot().size() > 0)
                     firstTokenAfterDot = lrItem.getAfterDot().get(0);
                 else continue;
 
@@ -48,31 +48,67 @@ public class Parser {
         return closureSet;
     }
 
-    public List<LrItem> goTo(List<LrItem> state, String token) {
+    public List<LrItem> goTo(State state, String token) {
         List<LrItem> newList = new ArrayList<>();
-        for (LrItem item : state) {
-            if (Objects.equals(item.getAfterDot().get(0), token)) {
-                LrItem newItem = new LrItem(item.getNonTerminal());
+        for (LrItem item : state.getLrItems()) {
+            if (item.getAfterDot().size() > 0)
+                if (Objects.equals(item.getAfterDot().get(0), token)) {
+                    LrItem newItem = new LrItem(item.getNonTerminal());
 
-                List<String> beforeDot = new ArrayList<>(item.getBeforeDot());
-                beforeDot.add(item.getAfterDot().get(0));
+                    List<String> beforeDot = new ArrayList<>(item.getBeforeDot());
+                    beforeDot.add(item.getAfterDot().get(0));
 
-                List<String> afterDot = new ArrayList<>();
-                if (item.getAfterDot().size() >= 2) {
-                    afterDot.addAll(item.getAfterDot().subList(1, item.getAfterDot().size()));
+                    List<String> afterDot = new ArrayList<>();
+                    if (item.getAfterDot().size() >= 2) {
+                        afterDot.addAll(item.getAfterDot().subList(1, item.getAfterDot().size()));
+                    }
+
+                    newItem.setBeforeDot(beforeDot);
+                    newItem.setAfterDot(afterDot);
+
+                    newList.add(newItem);
                 }
-
-                newItem.setBeforeDot(beforeDot);
-                newItem.setAfterDot(afterDot);
-
-                newList.add(newItem);
-            }
         }
         return this.closure(newList);
     }
 
-    public HashSet<String> colCan() {
-        HashSet<String> canonicalCollection = new HashSet<>();
-        return null;
+    public List<State> colCan() {
+        List<String> NuEpsilon = new ArrayList<>();
+        NuEpsilon.addAll(G.getGrammar().getNonTerminals());
+        NuEpsilon.addAll(G.getGrammar().getTerminals());
+
+        List<State> canonicalCollection = new ArrayList<>();
+        ProductionRule initialProduction = G.getGrammar().getProductionRules()
+                .stream()
+                .filter(rule -> Objects.equals(rule.getNonTerminal(), G.getGrammar().getStartingSymbol()))
+                .collect(Collectors.toList())
+                .get(0);
+        LrItem initialLrItem = new LrItem(initialProduction.getNonTerminal());
+        initialLrItem.setBeforeDot(new ArrayList<>());
+        initialLrItem.setAfterDot(initialProduction.getRules());
+
+        State initialState = new State(0, closure(new ArrayList<>(List.of(initialLrItem))));
+
+        canonicalCollection.add(initialState);
+
+        boolean modified;
+
+        do {
+            modified = false;
+            List<State> copyCanonicalCollection = new ArrayList<>(canonicalCollection);
+            for (State state : canonicalCollection) {
+                for (String token : NuEpsilon) {
+                    List<LrItem> gotoResult = this.goTo(state, token);
+                    State intermediaryState = new State(copyCanonicalCollection.get(copyCanonicalCollection.size() - 1).getStateNr() + 1, gotoResult);
+                    if (gotoResult.size() != 0 && !canonicalCollection.contains(intermediaryState)) {
+                        copyCanonicalCollection.add(intermediaryState);
+                        modified = true;
+                    }
+                }
+            }
+            if (modified) canonicalCollection = copyCanonicalCollection;
+        } while (modified);
+
+        return canonicalCollection;
     }
 }
