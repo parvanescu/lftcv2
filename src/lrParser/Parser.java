@@ -97,9 +97,11 @@ public class Parser {
             modified = false;
             List<State> copyCanonicalCollection = new ArrayList<>(canonicalCollection);
             for (State state : canonicalCollection) {
-                for (String token : NuEpsilon) {
-                    List<LrItem> gotoResult = this.goTo(state, token);
+                for (String symbol : NuEpsilon) {
+                    List<LrItem> gotoResult = this.goTo(state, symbol);
                     State intermediaryState = new State(copyCanonicalCollection.get(copyCanonicalCollection.size() - 1).getStateNr() + 1, gotoResult);
+                    intermediaryState.setGoToState(state.getStateNr());
+                    intermediaryState.setGoToSymbol(symbol);
                     if (gotoResult.size() != 0 && !canonicalCollection.contains(intermediaryState)) {
                         copyCanonicalCollection.add(intermediaryState);
                         modified = true;

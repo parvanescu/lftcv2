@@ -4,6 +4,7 @@ import fa.*;
 import grammar.EnhancedGrammar;
 import grammar.Grammar;
 import lrParser.LrItem;
+import lrParser.LrTable;
 import lrParser.Parser;
 
 import java.util.ArrayList;
@@ -94,11 +95,10 @@ public class Main {
 //            System.out.println("Exiting");
 //        }
 
-        Grammar grammar = new Grammar("C:\\Users\\parva\\OneDrive\\Desktop\\faculta semestrul5\\lftc\\LabsRepo\\lab5\\g2.txt");
+        Grammar grammar = new Grammar("C:\\Users\\parva\\OneDrive\\Desktop\\faculta semestrul5\\lftc\\LabsRepo\\lab5\\g3.txt");
 //        grammar.showMenu();
-
-
-        Parser p = new Parser(new EnhancedGrammar(grammar));
+        EnhancedGrammar enhancedGrammar = new EnhancedGrammar(grammar);
+        Parser p = new Parser(enhancedGrammar);
 //        List<LrItem> lrItems = new ArrayList<>();
 //        LrItem item = new LrItem("S'");
 //        item.setAfterDot(List.of("S"));
@@ -119,7 +119,11 @@ public class Main {
 //        System.out.println(s5);
 //        System.out.println(s6);
 
-        System.out.println(p.colCan());
+//        System.out.println(p.colCan());
+
+        LrTable lrTable = new LrTable(enhancedGrammar);
+        System.out.println(lrTable.getActionTablePart());
+        System.out.println(lrTable.getGoToTablePart());
 
 
 

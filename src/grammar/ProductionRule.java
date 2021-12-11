@@ -2,6 +2,7 @@ package grammar;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ProductionRule {
     String nonTerminal;
@@ -25,5 +26,18 @@ public class ProductionRule {
         StringBuilder builder = new StringBuilder();
         rules.forEach(rule->builder.append(rule).append(" "));
         return builder.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ProductionRule that = (ProductionRule) o;
+        return Objects.equals(nonTerminal, that.nonTerminal) && Objects.equals(rules, that.rules);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(nonTerminal, rules);
     }
 }
