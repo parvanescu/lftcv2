@@ -1,7 +1,9 @@
-package lrParser;
+package lrParser.parsing;
 
 import grammar.EnhancedGrammar;
 import grammar.ProductionRule;
+import lrParser.LrItem;
+import lrParser.State;
 
 import java.util.*;
 
@@ -63,10 +65,10 @@ public class LrTable {
     private final LinkedHashMap<Integer, Action> actionTablePart;
     private final Parser parser;
 
-    public LrTable(EnhancedGrammar g) {
+    public LrTable(EnhancedGrammar g,Parser p) {
         goToTablePart = new LinkedHashMap<>();
         actionTablePart = new LinkedHashMap<>();
-        this.parser = new Parser(g);
+        this.parser = p;
         this.generateTable(g);
 
     }

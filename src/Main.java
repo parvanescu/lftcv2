@@ -3,14 +3,12 @@ import exceptions.InvalidTokenException;
 import fa.*;
 import grammar.EnhancedGrammar;
 import grammar.Grammar;
-import lrParser.LrItem;
-import lrParser.LrTable;
-import lrParser.Parser;
+import lrParser.output.ParserOutput;
+import lrParser.parsing.Parser;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 public class Main {
     public static void main(String[] args) {
@@ -121,9 +119,16 @@ public class Main {
 
 //        System.out.println(p.colCan());
 
-        LrTable lrTable = new LrTable(enhancedGrammar);
-        System.out.println(lrTable.getActionTablePart());
-        System.out.println(lrTable.getGoToTablePart());
+//        LrTable lrTable = new LrTable(enhancedGrammar,p);
+//        System.out.println(lrTable.getActionTablePart());
+//        System.out.println(lrTable.getGoToTablePart());
+        List<Integer> productions = p.parseSequence(List.of("a","b","b","c"));
+        Collections.reverse(productions);
+        System.out.println(productions);
+
+        ParserOutput output = new ParserOutput();
+        output.generateTree(productions,grammar.getProductionRules());
+        System.out.println(output);
 
 
 

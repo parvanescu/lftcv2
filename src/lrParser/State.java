@@ -6,8 +6,6 @@ import java.util.Objects;
 public class State {
     private final List<LrItem> lrItems;
     private final Integer stateNr;
-    private Integer goToState;
-    private String goToSymbol;
 
     public State(Integer stateNo, List<LrItem> stateItems) {
         this.lrItems = stateItems;
@@ -20,22 +18,6 @@ public class State {
 
     public Integer getStateNr() {
         return stateNr;
-    }
-
-    public Integer getGoToState() {
-        return goToState;
-    }
-
-    public String getGoToSymbol() {
-        return goToSymbol;
-    }
-
-    public void setGoToState(Integer goToState) {
-        this.goToState = goToState;
-    }
-
-    public void setGoToSymbol(String goToSymbol) {
-        this.goToSymbol = goToSymbol;
     }
 
     @Override

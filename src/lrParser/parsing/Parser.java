@@ -1,8 +1,9 @@
-package lrParser;
+package lrParser.parsing;
 
 import grammar.EnhancedGrammar;
-import grammar.Grammar;
 import grammar.ProductionRule;
+import lrParser.LrItem;
+import lrParser.State;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -10,9 +11,11 @@ import java.util.stream.Collectors;
 public class Parser {
 
     public EnhancedGrammar G;
+    public LrTable table;
 
     public Parser(EnhancedGrammar g) {
         G = g;
+        table = new LrTable(g, this);
     }
 
     public List<LrItem> closure(List<LrItem> I) {
@@ -48,11 +51,11 @@ public class Parser {
         return closureSet;
     }
 
-    public List<LrItem> goTo(State state, String token) {
+    public List<LrItem> goTo(State state, String symbol) {
         List<LrItem> newList = new ArrayList<>();
         for (LrItem item : state.getLrItems()) {
             if (item.getAfterDot().size() > 0)
-                if (Objects.equals(item.getAfterDot().get(0), token)) {
+                if (Objects.equals(item.getAfterDot().get(0), symbol)) {
                     LrItem newItem = new LrItem(item.getNonTerminal());
 
                     List<String> beforeDot = new ArrayList<>(item.getBeforeDot());
@@ -100,8 +103,6 @@ public class Parser {
                 for (String symbol : NuEpsilon) {
                     List<LrItem> gotoResult = this.goTo(state, symbol);
                     State intermediaryState = new State(copyCanonicalCollection.get(copyCanonicalCollection.size() - 1).getStateNr() + 1, gotoResult);
-                    intermediaryState.setGoToState(state.getStateNr());
-                    intermediaryState.setGoToSymbol(symbol);
                     if (gotoResult.size() != 0 && !canonicalCollection.contains(intermediaryState)) {
                         copyCanonicalCollection.add(intermediaryState);
                         modified = true;
@@ -112,5 +113,30 @@ public class Parser {
         } while (modified);
 
         return canonicalCollection;
+    }
+
+    public List<Integer> parseSequence(List<String> sequence) {
+        LrConfig config = new LrConfig(sequence);
+        List<Integer> returnSequence = null;
+        var actionTable = this.table.getActionTablePart();
+        var gotoTable = this.table.getGoToTablePart();
+        boolean end = false;
+        do {
+            WorkingStackObject lastWorkingStackObj = config.getWorkingStack().get(config.getWorkingStack().size() - 1);
+            Action stateAction = actionTable.get(lastWorkingStackObj.stateNo);
+            if (stateAction.type == ActionType.Shift) {
+                config.shift(lastWorkingStackObj.stateNo, gotoTable);
+            } else if (stateAction.type == ActionType.Reduce) {
+                ProductionRule lProductionRule = this.G.getGrammar().getProductionRules().get(stateAction.productionNo);
+                config.reduce(gotoTable, lProductionRule, stateAction.productionNo);
+            } else if (stateAction.type == ActionType.Accept) {
+                returnSequence = config.getOutputBand();
+                end = true;
+            } else {
+                throw new RuntimeException("Error");
+            }
+        } while (!end);
+
+        return returnSequence;
     }
 }
