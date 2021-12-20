@@ -6,28 +6,30 @@ import grammar.Grammar;
 import lrParser.output.ParserOutput;
 import lrParser.parsing.Parser;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(
-                "C:\\Users\\parva\\OneDrive\\Desktop\\faculta semestrul5\\lftc\\LabsRepo\\lab3\\perr.in",
-                "C:\\Users\\parva\\OneDrive\\Desktop\\faculta semestrul5\\lftc\\LabsRepo\\lab1\\lab1b\\token.in",
-                "C:\\Users\\parva\\OneDrive\\Desktop\\faculta semestrul5\\lftc\\LabsRepo\\lab4\\FAidentifiers.in",
-                "C:\\Users\\parva\\OneDrive\\Desktop\\faculta semestrul5\\lftc\\LabsRepo\\lab4\\FAintconstants.in"
-        );
-        scanner.startScanning();
-        System.out.println(scanner.getPif());
-        System.out.println(scanner.getSymbolTable().toString());
-        if (scanner.getExceptionList().size() != 0)
-            for (InvalidTokenException exception : scanner.getExceptionList()) {
-                System.out.println(exception);
-            }
-
-        ImplFiniteAutomata faIdentifiers = new ImplFiniteAutomata("C:\\Users\\parva\\OneDrive\\Desktop\\faculta semestrul5\\lftc\\LabsRepo\\lab4\\FAidentifiers.in");
-        ImplFiniteAutomata faIntConstants = new ImplFiniteAutomata("C:\\Users\\parva\\OneDrive\\Desktop\\faculta semestrul5\\lftc\\LabsRepo\\lab4\\FAintconstants.in");
+//        Scanner scanner = new Scanner(
+//                "C:\\Users\\parva\\OneDrive\\Desktop\\faculta semestrul5\\lftc\\LabsRepo\\lab3\\perr.in",
+//                "C:\\Users\\parva\\OneDrive\\Desktop\\faculta semestrul5\\lftc\\LabsRepo\\lab1\\lab1b\\token.in",
+//                "C:\\Users\\parva\\OneDrive\\Desktop\\faculta semestrul5\\lftc\\LabsRepo\\lab4\\FAidentifiers.in",
+//                "C:\\Users\\parva\\OneDrive\\Desktop\\faculta semestrul5\\lftc\\LabsRepo\\lab4\\FAintconstants.in"
+//        );
+//        scanner.startScanning();
+//        System.out.println(scanner.getPif());
+//        System.out.println(scanner.getSymbolTable().toString());
+//        if (scanner.getExceptionList().size() != 0)
+//            for (InvalidTokenException exception : scanner.getExceptionList()) {
+//                System.out.println(exception);
+//            }
+//
+//        ImplFiniteAutomata faIdentifiers = new ImplFiniteAutomata("C:\\Users\\parva\\OneDrive\\Desktop\\faculta semestrul5\\lftc\\LabsRepo\\lab4\\FAidentifiers.in");
+//        ImplFiniteAutomata faIntConstants = new ImplFiniteAutomata("C:\\Users\\parva\\OneDrive\\Desktop\\faculta semestrul5\\lftc\\LabsRepo\\lab4\\FAintconstants.in");
 
 //        System.out.println("Menu:");
 //        System.out.println("11. Print set of states for identifiers");
@@ -122,12 +124,93 @@ public class Main {
 //        LrTable lrTable = new LrTable(enhancedGrammar,p);
 //        System.out.println(lrTable.getActionTablePart());
 //        System.out.println(lrTable.getGoToTablePart());
-        List<Integer> productions = p.parseSequence(List.of("a","b","b","c"));
+
+//        List<String> program = new ArrayList<>();
+//        program.add("start");
+//        program.add("declare");
+//        program.add("nr1");
+//        program.add("integer");
+//        program.add("auxiliary");
+//        program.add("*=");
+//        program.add("2");
+//        program.add(".");
+//        program.add("declare");
+//        program.add("nr2");
+//        program.add("integer");
+//        program.add("auxiliary");
+//        program.add("*=");
+//        program.add("5");
+//        program.add(".");
+//        program.add("declare");
+//        program.add("message");
+//        program.add("char");
+//        program.add("[");
+//        program.add("max-length");
+//        program.add("*=");
+//        program.add("256");
+//        program.add("]");
+//        program.add("auxiliary");
+//        program.add("*=");
+//        program.add("\"");
+//        program.add("Program finished");
+//        program.add("\"");
+//        program.add(".");
+//        program.add("verify");
+//        program.add("(");
+//        program.add("nr1");
+//        program.add(">");
+//        program.add("nr2");
+//        program.add(")");
+//        program.add(":");
+//        program.add("case");
+//        program.add("true");
+//        program.add(")");
+//        program.add(":");
+//        program.add("nr1");
+//        program.add("*=");
+//        program.add("nr1");
+//        program.add("-");
+//        program.add("nr2");
+//        program.add(".");
+//        program.add("show");
+//        program.add("nr1");
+//        program.add(".");
+//        program.add("case");
+//        program.add("false");
+//        program.add(":");
+//        program.add("nr2");
+//        program.add("*=");
+//        program.add("nr2");
+//        program.add("-");
+//        program.add("nr1");
+//        program.add(".");
+//        program.add("show");
+//        program.add("nr2");
+//        program.add(".");
+//        program.add("always");
+//        program.add("show");
+//        program.add("message");
+//        program.add(".");
+//        program.add("end");
+
+//        List.of("a","b","b","c")
+
+        java.util.Scanner scanner1 = null;
+        try {
+            scanner1 = new java.util.Scanner(new File("C:/Users/parva/OneDrive/Desktop/faculta semestrul5/lftc/LabsRepo/lab7/seq.txt"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        String line = scanner1.nextLine();
+        List<String> sequence = new ArrayList<>(List.of(line.split(" ")));
+
+        List<Integer> productions = p.parseSequence(sequence);
         Collections.reverse(productions);
         System.out.println(productions);
 
         ParserOutput output = new ParserOutput();
         output.generateTree(productions,grammar.getProductionRules());
+        output.writeTree("C:/Users/parva/OneDrive/Desktop/faculta semestrul5/lftc/LabsRepo/lab7/out1.txt");
         System.out.println(output);
 
 

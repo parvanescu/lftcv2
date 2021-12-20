@@ -40,7 +40,7 @@ public class Grammar {
                 }
                 if (lineNr == 1) {
                     String lineWithoutBrackets = line.substring(1, line.length() - 1);
-                    terminals.addAll(List.of(lineWithoutBrackets.split(",")));
+                    terminals.addAll(getListOfNonTerminals(lineWithoutBrackets));
                 }
                 if (lineNr == 2) {
                     this.startingSymbol = line;
@@ -126,5 +126,21 @@ public class Grammar {
 
     public List<ProductionRule> getProductionRules() {
         return productionRules;
+    }
+
+    private static List<String> getListOfNonTerminals(String lineWithoutBrackets){
+        List<String> nonTerminalsList = new ArrayList<>();
+
+        for(String element: lineWithoutBrackets.split(",")){
+            if(element.contains("-") && element.length() == 3){
+                char startingValue = element.split("-")[0].toCharArray()[0];
+                char endingValue = element.split("-")[1].toCharArray()[0];
+                for (char i = startingValue; i <= endingValue; i++) {
+                    nonTerminalsList.add(String.valueOf(i));
+                }
+            }else nonTerminalsList.add(element);
+        }
+
+        return nonTerminalsList;
     }
 }

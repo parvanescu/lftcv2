@@ -2,6 +2,7 @@ package lrParser.output;
 
 import grammar.ProductionRule;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,5 +46,30 @@ public class ParserOutput {
         builder.append("|  index   |     info     |  parent  |  leftSibling  |\n");
         treeDs.forEach(node->builder.append(centerString(node.index.toString(),node.info.toString(),node.parentIndex.toString(),node.leftSiblingIndex.toString())));
         return builder.toString();
+    }
+
+    public void writeTree(String filePath) {
+        File file = new File(filePath);
+        Writer writer = null;
+        try {
+            writer = new FileWriter(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        BufferedWriter bufferedWriter = new BufferedWriter(writer);
+
+        try {
+            bufferedWriter.write(this.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            bufferedWriter.flush();
+            bufferedWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 }

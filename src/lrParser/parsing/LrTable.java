@@ -117,6 +117,7 @@ public class LrTable {
                 for (LrItem item : state.getLrItems()) {
                     StringBuilder builder = new StringBuilder();
                     item.getBeforeDot().forEach(symbol -> builder.append(symbol).append(" "));
+                    item.getAfterDot().forEach(symbol -> builder.append(symbol).append(" "));
                     if (builder.length() > 1)
                         builder.deleteCharAt(builder.length() - 1);
                     ProductionRule productionRule = new ProductionRule(item.getNonTerminal(), builder.toString());

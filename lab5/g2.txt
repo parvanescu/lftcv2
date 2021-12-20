@@ -12,19 +12,19 @@ char->' letter '|' digit '
 string->char|char string
 boolean->true|false
 program->start decl_list cmpd_stmt end
-decl_list->declaration|declaration . decl_list
+decl_list->declaration . declaration . declaration
 declaration->variable_dclr|array_dclr
 variable_dclr->declare IDENTIFIER type1 type2 *= expression .
-array_decl->declare IDENTIFIER type1 array_length_assignment type2 .
+array_decl->declare IDENTIFIER type1 array_length_assignment type2 *= expression .
 array_length_assignment->max-length *= expression
 type1->boolean|char|integer|double|float
 type2->input|output|auxiliary|input-output
-cmpd_stmt->stmt|stmt cmpd_stmt
+cmpd_stmt->stmt stmt
 stmt->simple_stmt|struct_stmt
 simple_stmt->assignment_stmt|io_stmt
 assignment_stmt->IDENTIFIER *= expression .
 io_stmt->read|show IDENTIFIER .
-expression->expression + term|expression - term|term
+expression->expression + term|expression - term|term|" string "
 term->term * factor|term / factor|term % factor|factor
 factor->( expression )|no|IDENTIFIER
 struct_stmt->if_stmt|while_stmt|pass_stmt|array_stmt|for_stmt

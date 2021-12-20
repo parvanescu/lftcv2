@@ -22,13 +22,18 @@ public class LrConfig {
     }
 
     public void shift(Integer stateNo, HashMap<GoToPosition, Integer> goToTable) {
-        String firstToken = inputStack.pop();
-        GoToPosition position = new GoToPosition(firstToken, stateNo);
-        Integer newState = goToTable.get(position);
-        if(newState == -1){
-            throw new RuntimeException("In state "+stateNo+" with token "+firstToken+" no action is defined");
+        try{
+            String firstToken = inputStack.pop();
+            GoToPosition position = new GoToPosition(firstToken, stateNo);
+            Integer newState = goToTable.get(position);
+            if(newState == -1){
+                throw new RuntimeException("In state "+stateNo+" with token "+firstToken+" no action is defined");
+            }
+            workingStack.add(new WorkingStackObject(newState, firstToken));
+        }catch (NullPointerException e){
+            System.out.println(e);
         }
-        workingStack.add(new WorkingStackObject(newState, firstToken));
+
     }
 
     public void reduce(HashMap<GoToPosition, Integer> goToTable, ProductionRule productionRuleL,Integer l) {
