@@ -33,7 +33,7 @@ public class ProductionRule {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ProductionRule that = (ProductionRule) o;
-        return Objects.equals(nonTerminal, that.nonTerminal) && Objects.equals(rules, that.rules);
+        return Objects.equals(nonTerminal, that.nonTerminal) && Objects.equals(rules, that.rules) && rules.size() == that.rules.size();
     }
 
     @Override

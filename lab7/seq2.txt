@@ -1,0 +1,16 @@
+start
+
+declare a integer auxiliary *= 2.
+declare b integer auxiliary *= 5.
+declare message char [max-length *= 256] auxiliary *= "Program finished".
+
+verify (a > b):
+case true:
+a *= a - b.
+show a.
+case false:
+b *= b - a.
+show b
+always:
+show message.
+end

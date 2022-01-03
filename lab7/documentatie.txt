@@ -1,0 +1,162 @@
+
+Production rule:
+    Fields:
+        nonTerminal - the starting nonTerminal of the production
+        rules - a list of string representing the resulting expression from the non terminal
+
+    Methods:
+        getters
+
+Grammar:
+    Fields:
+        terminals - Set of strings
+        nonTerminals - Set of strings
+        startingSymbol - String
+        productionRules - List of production rules
+
+    Methods:
+        readFromFile:
+            Reads every line from a file and based on the line number adds the input in the following ways
+                Line 1: Non terminals
+                Line 2: Terminals
+                Line 3: Starting symbol
+                Following lines:
+                    Production rules parsed and tokenized
+
+        showMenu:
+            Shows a menu which prints every element of the grammar
+
+        getters + setters
+
+        getListOfNonTerminals:
+            Utility function for creating an interval based on a regex expression
+            e.g. a-z => [a,b,c,....,z]
+
+Enhanced Grammar:
+    Fields:
+        grammar - object of type grammar
+
+    Methods:
+        constructor - uses the copy constructor of the grammar and generates the new
+            following rule S' -> S
+
+
+LrItem:
+    Fields:
+        nonTerminal - starting nonTerminal symbol from which the resulting sequence can be derived
+        beforeDot - list of string symbols before the dot
+        afterDot - list of string symbols after the dot
+
+    Methods:
+        getters + setters
+
+State:
+    Fields:
+        lrItems - list of lr items
+        stateNr - the no of the state
+
+    Methods:
+        getters + setters
+
+WorkingStackObject:
+    Fields:
+        token - the token name
+        stateNo - the nr of the state
+    Description: it only represents a data structure for the working stack items
+
+
+Parser:
+    Description:
+        object that holds all the methods and data structures required by a LR(0)
+        parser
+    Fields:
+        g - an instance of the enhanced grammar
+        table - the lrTable of the parser
+    Methods:
+        closure -
+            params:
+                I: list of lrItems
+            description:
+                Iterates over the given list and appends to it for every item
+                one or more new lrItems if and only if the first symbol from the afterDot field
+                of the iterated item is a nonTerminal. The new ones will have the starting
+                non-terminal equal to the first symbol and the production rule will have the dot at
+                the beginning. The algorithm iterates until there is no item added after an iteration
+                step.
+
+        goto -
+            params:
+                state: the state from which we start
+                symbol: the symbol for which we want to see where we end up based on the state
+                    if the dot is moved
+            description:
+                Iterates over each item from the state, and if the first symbol after dot from that
+                item is the symbol gotten as parameter, a new lrItem is generated but the dot is moved after
+                that matching symbol. That item is added to a list. Finally, after the iteration, the result,
+                represents the result of the closure function called on the created list.
+
+        colCan -
+            description:
+                This function constructs the canonical set of states based on the following rules:
+                    1. Generates an initial state containing the S' production from the enhanced grammar.
+                    2. Iterates over the existing set of states, and for each state iterates every symbol (terminal or non-terminal)
+                        from the grammar.
+                        2.a. Computes the goto value from the current state, with the currently iterated symbol.
+                        2.b. If the computed list of items is not empty, and a state that contains the exact same items does not exist,
+                            a new state is created and added to the final result.
+                    3. The iteration goes until there were no modifications to the final result after iterating over all the symbols and existing states
+
+        parseSequence -
+            params:
+                sequence: list of all symbols from the sequence to be parsed
+            description:
+                1. Creates a new empty config
+                2. While the currently working stack object action is not accept , repeat:
+                    2.a Get the lastWorking stack object, and check it's action type:
+                       Shift -> call shift on the config object
+                       Reduce -> call reduce on the config object, and give the production rule to which
+                                    corresponds the lrItem from the last working stack obj
+                       Accept -> get the output from the config object and set the end flag to true
+                3. Return the output
+
+    GoToPosition:
+        fields:
+            stateNumber: integer
+            symbol: integer
+
+    ActionType:
+        ENUM:
+            ACCEPT,SHIFT,REDUCE
+
+    Action:
+        fields:
+            type: ActionType
+            productionNo: integer
+
+    LrTable:
+        fields:
+            goToTable: map between goToPosition and Integer representing the state no
+            actionTable: map between integer and action
+            parser: parser instance
+        methods:
+            generateTable:
+                params:
+                    g: EnhancedGrammar instance
+                description:
+                    1. Gets the canonical collection of the grammar
+                    2. For each state in the canonical collection
+                        2.a. For each symbol (terminal or non-terminal)
+                                Generates the goto with the current state and symbol, creates new state and
+                                searches for it in the canonical collection.
+                                If found a new {key:value} is added to the goToTable:
+                                    key - symbol + number of the current state
+                                    value - the number of the following state from the current state with the current symbol
+                        2.b  Action table is generated following the rules:
+                            -> For each lrItem from the current state, if the afterDotField from the item has no symbols after dot
+                            reduce flag is set. If not, shift flag is set. If the symbol of the lr item is S' then accept flag is set.
+                            -> If accept flag is set, new value is put in the actionTable part with the accept action type
+                            -> If shift flag is set, new value is put in the actionTable part with the shift action type
+                            -> Else, a new reduce L action should be added to the action table.
+                                For this , every item of the state is iterated and the L production rule from the grammar
+                                is determined so that the reduce action will have the nr of the production to which is reduced.
+                                If for a state, there are 2 different production no's found there is a reduce-reduce conflict.

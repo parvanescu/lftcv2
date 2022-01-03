@@ -1,0 +1,29 @@
+{letter,digit,nzdigit,allowed_identifier,nrConst,no,character,string,charrArr,program,declList,declaration,cmpd_expression,type,arrayDecl,stmtList,stmt,simpleStmt,assignStmt,expression,mathExpression,factor,stringExpression,iostmt,complexStmt,ifStmt,whileStmt,forStmt,condition,RELATION}
+{a-z,A-Z,0-9,_,+,-,',",{,},;,decl,prog,=,[,],.,string,char,int,List,<,>,*,/,**,(,),read,print,if,else,while,for,let,<=,==,!=,>=,>}
+program
+letter->A|B| … |Z|a|b| … |z
+digit->0|1|... |9
+nzdigit->1|2|3|4|5|6|7|8|9
+allowed_identifier->letter|digit|_
+nrConst->nzdigit|- nzdigit|nzdigit no|- nzdigit no|0
+no->digit no| digit
+character->' letter '|' digit '
+string->" charArr "
+charArr->character charArr|character
+program->decl { declList } prog { stmtList }
+declList->declaration declaration declaration
+declaration->type identifier ;|type identifier = expression ;
+type->string|char|int
+stmtList->stmt stmt stmt stmt ;
+stmt->simpleStmt|complexStmt
+simpleStmt->assignStmt|ioStmt
+assignStmt->identifier = expression |identifier = stringExpression
+expression->expression + factor|expression - factor|factor
+factor->identifier|no
+iostmt->read ( identifier )|print ( identifier )
+complexStmt->ifStmt|whileStmt|forStmt
+ifStmt->if ( condition ) { stmtList } else { stmtList } | if ( condition ) {stmtList}
+whileStmt->while ( condition ) { stmtList }
+forStmt->for ( let assignStmt ; condition ; assignStmt ) { stmtList }
+condition->expression RELATION expression | expression
+RELATION-><|<=|==|!=|>=|>
